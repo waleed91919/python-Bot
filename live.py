@@ -94,10 +94,10 @@ def main():
                             trade_message = (f"Verkauf: {symbol}\n"
                                              f"Gewinn: {profit:.2f} EUR")
                             send_to_discord(WEBHOOK_URL_TRADES, trade_message)
-                    # Daten speichern
-                    df = pd.DataFrame([data])
-                    datei_name = f"{symbol}.csv"
-                    df.to_csv(datei_name, mode='a', header=False, index=False)
+                # Daten speichern
+                df = pd.DataFrame([data])
+                datei_name = f"{symbol}.csv"
+                df.to_csv(datei_name, mode='a', header=False, index=False)
             # Warten bis zur nächsten Minute
             time.sleep(60 - datetime.now().second)
         else:
