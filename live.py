@@ -4,6 +4,18 @@ import pandas as pd
 from datetime import datetime, timedelta
 import time
 import pytz
+from flask import Flask
+import threading
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Hello, Render!"
+
+def start_flask():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
 
 # Discord Webhook URLs
 WEBHOOK_URL_DATA = "https://discord.com/api/webhooks/1288178828296065108/2WAROM1BSqljiBOyuKkITpb9_FWwYUa8CD6lUZVY-as5CixuWDFbe9ffRkQ1pqjsgPeq"
@@ -94,10 +106,10 @@ def main():
                             trade_message = (f"Verkauf: {symbol}\n"
                                              f"Gewinn: {profit:.2f} EUR")
                             send_to_discord(WEBHOOK_URL_TRADES, trade_message)
-                # Daten speichern
-                df = pd.DataFrame([data])
-                datei_name = f"{symbol}.csv"
-                df.to_csv(datei_name, mode='a', header=False, index=False)
+                    # Daten speichern
+                    df = pd.DataFrame([data])
+                    datei_name = f"{symbol}.csv"
+                    df.to_csv(datei_name, mode='a', header=False, index=False)
             # Warten bis zur nächsten Minute
             time.sleep(60 - datetime.now().second)
         else:
@@ -105,5 +117,9 @@ def main():
             time.sleep(60 - datetime.now().second)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
+    # Flask-Anwendung in einem separaten Thread starten
+    flask_thread = threading.Thread(target=start_flask)
+    flask_thread.start()
+    
+    # Hauptfunktion ausführen
     main()
