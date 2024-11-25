@@ -5,6 +5,7 @@ import time
 import pytz
 import os
 from flask import Flask
+import threading
 
 app = Flask(__name__)
 
@@ -12,7 +13,7 @@ app = Flask(__name__)
 def home():
     return "Hello, Render!"
 
-if __name__ == "__main__":
+def start_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
 
@@ -116,4 +117,9 @@ def main():
             time.sleep(60 - datetime.now().second)
 
 if __name__ == "__main__":
+    # Flask-Anwendung in einem separaten Thread starten
+    flask_thread = threading.Thread(target=start_flask)
+    flask_thread.start()
+    
+    # Hauptfunktion ausführen
     main()
